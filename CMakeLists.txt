@@ -6,5 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(OpenCV_DIR "C:/Program Files/opencv/build/x64/vc16/lib")
 
 find_package(OpenCV REQUIRED)
-#add_executable(untitled6 main.cpp)
 
+# add executables here later
+#add_executable(AIS2203_JetRacer test.cpp)
+#target_link_libraries(AIS2203_JetRacer PRIVATE ${OpenCV_LIBRARIES})
