@@ -5,6 +5,8 @@
 #include "simple_socket/TCPSocket.hpp"
 #include "simple_socket/SimpleConnection.hpp"
 
+#include "nlohmann/json.hpp"
+
 struct SteeringData {
     double steering;
     double throttle;
@@ -17,10 +19,13 @@ struct SteeringData {
 class Steering {
 public:
     Steering(const std::string& ip, int port);
+    void sendData(const SteeringData& data) const;
 
 private:
     simple_socket::TCPClientContext _clientCtx;
     std::unique_ptr<simple_socket::SimpleConnection> _conn;
+
+    static std::string toJson(const SteeringData &data);
 };
 
 
