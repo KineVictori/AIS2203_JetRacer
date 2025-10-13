@@ -1,0 +1,3 @@
+
+add_executable(TestSteering TestSteering.cpp)
+target_link_libraries(TestSteering PRIVATE Steering)
