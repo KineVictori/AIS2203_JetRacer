@@ -23,3 +23,7 @@ add_library(Steering ${SHARED_SOURCES})
 target_link_libraries(Steering PUBLIC simple_socket nlohmann_json) # I want this to be private, but it does not work..?
 
 target_include_directories(Steering PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+find_package(pybind11 REQUIRED)
+pybind11_add_module(SteeringPython pybind.cpp)
+target_link_libraries(SteeringPython PRIVATE Steering)
