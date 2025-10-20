@@ -4,24 +4,19 @@
 #include <iostream>
 
 int main() {
-    // cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
-
-    cv::VideoCapture cap(0);
-
-    if (!cap.isOpened()) {
-        std::cerr << "Unable to open camera" << std::endl;
-        return 1;
+    std::string pipeline = "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=1280, height=720, framerate=30/1 ! "
+                           "nvvidconv ! videoconvert ! appsink";
+    cv::VideoCapture cap(pipeline, cv::CAP_GSTREAMER);
+    if(!cap.isOpened()) {
+        std::cerr << "Failed to open CSI camera\n";
+        return -1;
     }
-
-    namedWindow("Webcam", cv::WINDOW_AUTOSIZE);
-
     cv::Mat frame;
-    while (true) {
-        cap.read(frame);
-        imshow("Webcam", frame);
-        const auto key = cv::waitKey(1);
-        if (key == 27 || key == 'q') {
-            break;
-        }
+    while(true) {
+        cap >> frame;
+        if(frame.empty()) break;
+        imshow("CSI Camera", frame);
+        if(cv::waitKey(1) == 27) break; // ESC to exit
     }
+    return 0;
 }
