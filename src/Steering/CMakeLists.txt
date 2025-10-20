@@ -3,8 +3,8 @@ include(FetchContent)
 set(SIMPLE_SOCKET_BUILD_TESTS OFF)
 FetchContent_Declare(
         SimpleSocket
-        GIT_REPOSITORY https://github.com/markaren/SimpleSocket.git
-        GIT_TAG 96d28d34fed63a9888f52dad282227f40f0f1122
+        GIT_REPOSITORY https://github.com/IslandRock1/SimpleSocket.git
+        GIT_TAG 888c09c4cde535b9a7f44c552a1325d60bc7d97a
 )
 FetchContent_MakeAvailable(SimpleSocket)
 
