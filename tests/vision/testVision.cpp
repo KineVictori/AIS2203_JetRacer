@@ -1,11 +1,10 @@
 
-//#include "testVision.hpp"
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
 int main() {
-    cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
+    // cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
 
     cv::VideoCapture cap(0);
 
