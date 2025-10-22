@@ -4,7 +4,7 @@ set(SIMPLE_SOCKET_BUILD_TESTS OFF)
 FetchContent_Declare(
         SimpleSocket
         GIT_REPOSITORY https://github.com/IslandRock1/SimpleSocket.git
-        GIT_TAG 8477a23e3fd3f481a4593a7f9466cda36e6a653b
+        GIT_TAG "master"
 )
 FetchContent_MakeAvailable(SimpleSocket)
 
