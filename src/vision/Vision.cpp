@@ -23,12 +23,15 @@ Vision::~Vision() {
 void Vision::update() {
     _cap >> _frame;
 
-    std::unique_ptr<simple_socket::SimpleConnection> conn = _server.accept();
-    std::thread t([c = std::move(conn), this]() mutable {
-        socketHandler(std::move(c));
-    });
+    try {
+        std::unique_ptr<simple_socket::SimpleConnection> conn = _server.accept();
+        std::thread t([c = std::move(conn), this]() mutable {
+            socketHandler(std::move(c));
+        });
 
-    _connectionThreads.push_back(std::move(t));
+        _connectionThreads.push_back(std::move(t));
+    } catch(...) {}
+
 }
 
 cv::Mat Vision::getFrame() {
