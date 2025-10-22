@@ -16,10 +16,17 @@ int main() {
     std::string output = "AUTO";
     conn->write(output);
 
-    std::vector<unsigned char> buffer(1024);
+    std::vector<unsigned char> bufferSmol(4);
+    int numBytes = conn->read(bufferSmol);
 
-    int numBytes = conn->read(buffer);
-    int nextNumBytes = conn->read(buffer);
+    int nextNumBytes = 0;
+    nextNumBytes |= bufferSmol[0];
+    nextNumBytes |= bufferSmol[1] << 8;
+    nextNumBytes |= bufferSmol[2] << 16;
+    nextNumBytes |= bufferSmol[3] << 24;
+    
+    std::vector<unsigned char> buffer(nextNumBytes);
+    conn->read(buffer);
 
     std::cout << "Received bytes: ";
     for (auto b : buffer) std::cout << int(b) << " ";

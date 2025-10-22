@@ -56,8 +56,7 @@ void Vision::socketHandler(std::unique_ptr<simple_socket::SimpleConnection> conn
     std::vector<uchar> buf;
     cv::imencode(".jpg", frame, buf);
 
-    std::vector<unsigned char> bufferLoc = {1, 2, 3};
-    int numBytes = bufferLoc.size();
+    int numBytes = buf.size();
     conn->write(reinterpret_cast<char*>(&numBytes), sizeof(numBytes)); // send size as int
-    conn->write(reinterpret_cast<char*>(bufferLoc.data()), bufferLoc.size());      // send raw bytes
+    conn->write(reinterpret_cast<char*>(buf.data()), buf.size());      // send raw bytes
 }
