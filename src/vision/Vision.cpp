@@ -58,6 +58,6 @@ void Vision::socketHandler(std::unique_ptr<simple_socket::SimpleConnection> conn
     buf = {1, 2, 3}; // TODO: remove lol
 
     int numBytes = buf.size();
-    conn->write(std::to_string(numBytes));
-    conn->write(buf);
+    std::string out{buf.begin(), buf.end()};
+    conn->write(std::to_string(numBytes) + out);
 }
