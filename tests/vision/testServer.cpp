@@ -2,8 +2,6 @@
 #include <opencv2/opencv.hpp>
 #include "vision/Vision.hpp"
 
-
-
 int main() {
 
     Vision vision;

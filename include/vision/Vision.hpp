@@ -10,6 +10,8 @@
 #include <simple_socket/SimpleConnection.hpp>
 #include <iostream>
 
+#include <atomic>
+
 class Vision {
 public:
     Vision();
@@ -28,6 +30,8 @@ private:
     std::vector<std::thread> _connectionThreads;
 
     void socketHandler(std::unique_ptr<simple_socket::SimpleConnection> conn);
+
+    std::atomic<bool> _stopFlag = false;
 
 };
 

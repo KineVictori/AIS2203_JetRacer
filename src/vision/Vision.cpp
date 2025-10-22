@@ -11,21 +11,25 @@ Vision::Vision(): _server(simple_socket::TCPServer(45678)) {
         isOkay = false;
     }
 
-    /*std::thread serverThread([this] {
-        try {
-            while (true) {
-                std::unique_ptr<simple_socket::SimpleConnection> conn = _server.accept();
+    _serverThread = std::thread([this]() {
+        while (!_stopFlag) {
+            try {
+                auto conn = _server.accept();
                 std::thread t([c = std::move(conn), this]() mutable {
                     socketHandler(std::move(c));
                 });
-
                 _connectionThreads.push_back(std::move(t));
+            } catch (...) {
+                // ignore
             }
-        } catch (const std::exception& e) {}
-    });*/
+        }
+    });
 }
 
 Vision::~Vision() {
+    _stopFlag = true;
+    _cap.release();
+
     for (auto &t : _connectionThreads) {
         t.join();
     }
@@ -49,12 +53,13 @@ void Vision::socketHandler(std::unique_ptr<simple_socket::SimpleConnection> conn
         mode = 1;
     } // TODO: implement mode switching (example AUTO: frames as fast as possible, one: just get one frame)
 
-    auto frame = getFrame();
-    std::vector<uchar> buf;
-    cv::imencode(".jpg", frame, buf);
-    buf = {1, 2, 3}; // TODO: remove lol
+    while (!_stopFlag) {
+        auto frame = getFrame();
+        std::vector<uchar> buf;
+        cv::imencode(".jpg", frame, buf);
 
-    int numBytes = buf.size();
-    conn->write(std::to_string(numBytes));
-    conn->write(buf);
+        int numBytes = buf.size();
+        conn->write(reinterpret_cast<char*>(&numBytes), sizeof(numBytes)); // send size as int
+        conn->write(reinterpret_cast<char*>(buf.data()), buf.size());      // send raw bytes
+    }
 }
