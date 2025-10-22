@@ -17,11 +17,13 @@ int main() {
     conn->write(output);
 
     std::vector<unsigned char> buffer(1024);
-    auto bytesRead = 0;
-    while (bytesRead == 0) {
-        bytesRead += conn->read(buffer);
-    }
 
-    std::string response{buffer.begin(), buffer.end()};
-    std::cout << response << std::endl;
+    int numBytes = conn->read(buffer);
+    int nextNumBytes = conn->read(buffer);
+
+    std::cout << "Received bytes: ";
+    for (auto b : buffer) std::cout << int(b) << " ";
+    std::cout << "\n";
+
+    std::cout << numBytes << " | " << nextNumBytes << "\n";
 }
