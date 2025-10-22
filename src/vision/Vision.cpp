@@ -10,19 +10,6 @@ Vision::Vision(): _server(simple_socket::TCPServer(45678)) {
         std::cerr << "Failed to open CSI camera\n";
         isOkay = false;
     }
-
-    std::thread serverThread([this] {
-        try {
-            while (true) {
-                std::unique_ptr<simple_socket::SimpleConnection> conn = _server.accept();
-                std::thread t([c = std::move(conn), this]() mutable {
-                    socketHandler(std::move(c));
-                });
-
-                _connectionThreads.push_back(std::move(t));
-            }
-        } catch (const std::exception& e) {}
-    });
 }
 
 Vision::~Vision() {
@@ -35,6 +22,13 @@ Vision::~Vision() {
 
 void Vision::update() {
     _cap >> _frame;
+
+    std::unique_ptr<simple_socket::SimpleConnection> conn = _server.accept();
+    std::thread t([c = std::move(conn), this]() mutable {
+        socketHandler(std::move(c));
+    });
+
+    _connectionThreads.push_back(std::move(t));
 }
 
 cv::Mat Vision::getFrame() {
