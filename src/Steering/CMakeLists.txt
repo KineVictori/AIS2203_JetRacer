@@ -24,12 +24,8 @@ target_link_libraries(Steering PUBLIC simple_socket nlohmann_json) # I want this
 
 target_include_directories(Steering PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-find_package(pybind11 QUIET)
+find_package(pybind11)
 if(pybind11_FOUND)
-    message(STATUS "Building Python bindings with pybind11")
-
     pybind11_add_module(SteeringPython pybind.cpp)
     target_link_libraries(SteeringPython PRIVATE Steering)
-else()
-    message(STATUS "pybind11 not found — skipping Python bindings")
 endif()
