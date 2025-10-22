@@ -20,6 +20,7 @@ public:
     bool isOkay;
     void update();
     cv::Mat getFrame();
+    bool isFinished();
 
 private:
     cv::VideoCapture _cap;

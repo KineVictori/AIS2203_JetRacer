@@ -63,3 +63,8 @@ void Vision::socketHandler(std::unique_ptr<simple_socket::SimpleConnection> conn
         conn->write(reinterpret_cast<char*>(buf.data()), buf.size());      // send raw bytes
     }
 }
+
+bool Vision::isFinished() {
+    return _stopFlag;
+}
+

@@ -6,12 +6,14 @@ int main() {
 
     Vision vision;
 
-    while(true) {
+    while(!vision.isFinished()) {
         vision.update();
-        auto frame = vision.getFrame();
+
+        // If connected to a display, you may uncomment these lines.
+        /*auto frame = vision.getFrame();
         if(frame.empty()) break;
         cv::imshow("CSI Camera", frame);
-        if(cv::waitKey(1) == 27) break; // ESC to exit
+        if(cv::waitKey(1) == 27) break; // ESC to exit*/
     }
     return 0;
 }
