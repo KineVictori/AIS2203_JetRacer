@@ -11,7 +11,7 @@ Vision::Vision(): _server(simple_socket::TCPServer(45678)) {
         isOkay = false;
     }
 
-    /*std::thread serverThread([this] {
+    std::thread serverThread([this] {
         try {
             while (true) {
                 std::unique_ptr<simple_socket::SimpleConnection> conn = _server.accept();
@@ -22,7 +22,7 @@ Vision::Vision(): _server(simple_socket::TCPServer(45678)) {
                 _connectionThreads.push_back(std::move(t));
             }
         } catch (const std::exception& e) {}
-    });*/
+    });
 }
 
 Vision::~Vision() {
