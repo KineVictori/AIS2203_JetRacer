@@ -12,7 +12,7 @@ Vision::Vision(): _server(simple_socket::TCPServer(45678)) {
     }
 
     _serverThread = std::thread([this]() {
-        while (true) {
+        while (!_stopFlag) {
             try {
                 auto conn = _server.accept();
                 std::thread t([c = std::move(conn), this]() mutable {
@@ -27,6 +27,7 @@ Vision::Vision(): _server(simple_socket::TCPServer(45678)) {
 }
 
 Vision::~Vision() {
+    _stopFlag = true;
     _cap.release();
 
     for (auto &t : _connectionThreads) {
@@ -52,11 +53,13 @@ void Vision::socketHandler(std::unique_ptr<simple_socket::SimpleConnection> conn
         mode = 1;
     } // TODO: implement mode switching (example AUTO: frames as fast as possible, one: just get one frame)
 
-    auto frame = getFrame();
-    std::vector<uchar> buf;
-    cv::imencode(".jpg", frame, buf);
+    while (!_stopFlag) {
+        auto frame = getFrame();
+        std::vector<uchar> buf;
+        cv::imencode(".jpg", frame, buf);
 
-    int numBytes = buf.size();
-    conn->write(reinterpret_cast<char*>(&numBytes), sizeof(numBytes)); // send size as int
-    conn->write(reinterpret_cast<char*>(buf.data()), buf.size());      // send raw bytes
+        int numBytes = buf.size();
+        conn->write(reinterpret_cast<char*>(&numBytes), sizeof(numBytes)); // send size as int
+        conn->write(reinterpret_cast<char*>(buf.data()), buf.size());      // send raw bytes
+    }
 }
