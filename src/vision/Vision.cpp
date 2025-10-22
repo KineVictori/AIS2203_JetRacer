@@ -26,6 +26,8 @@ Vision::Vision(): _server(simple_socket::TCPServer(45678)) {
 }
 
 Vision::~Vision() {
+    _cap.release();
+
     for (auto &t : _connectionThreads) {
         t.join();
     }
