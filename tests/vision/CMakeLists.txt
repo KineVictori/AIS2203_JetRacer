@@ -14,4 +14,4 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SimpleSocket)
 
 add_executable(testClient testClient.cpp)
-target_link_libraries(testClient PUBLIC ${OpenCV_LIBRARIES} simple_socket)
+target_link_libraries(testClient PUBLIC ${OpenCV_LIBRARIES} simple_socket visionClient)

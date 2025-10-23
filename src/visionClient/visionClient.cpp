@@ -1,16 +1,7 @@
 
-#include <opencv2/opencv.hpp>
 #include "visionClient/visionClient.hpp"
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <chrono>
-
-#include <simple_socket/SimpleConnection.hpp>
-#include "simple_socket/TCPSocket.hpp"
-
-void test() {
+void testLoc() {
     simple_socket::TCPClientContext clientCtx;
     constexpr int port = 45678;
     const auto conn = clientCtx.connect("10.22.22.165", port);
@@ -85,21 +76,66 @@ void test() {
     std::cout << "Stream ended\n";
 }
 
-int main() {
-    /*test();
-    return 1;*/
+visionClient::visionClient(std::string ip, int port)
+    : _clientCtx(){
+    testLoc();
 
-    visionClient client{"10.22.22.165", 45678};
+    std::cout << "Creating vision client..." << std::endl;
 
-    /*while (true) {
-        auto maybeFrame = client.getFrame();
-        if (maybeFrame.has_value()) {
-            cv::imshow("frame", maybeFrame.value());
+    _conn = _clientCtx.connect(ip, port);
+    std::cout << "Connected!" << std::endl;
+
+    _conn->write("AUTO");
+    std::cout << "Waiting for connection..." << std::endl;
+
+    _thread = std::thread(&visionClient::runConnection, this);
+    std::cout << "Waiting for co." << std::endl;
+}
+
+visionClient::~visionClient() {
+    _stopFlag = true;
+    _thread.join();
+}
+
+
+std::optional<cv::Mat> visionClient::getFrame() {
+    if (_firstFrameRecieved) {
+        std::lock_guard<std::mutex> lock(_mutex);
+        return _frame.clone();
+    }
+
+    return {};
+}
+
+
+void visionClient::runConnection() {
+    while (!_stopFlag) {
+        std::vector<unsigned char> bufferSmol(4);
+        int headerBytesRead = 0;
+        while (headerBytesRead < 4) {
+            int n = _conn->read(bufferSmol.data() + headerBytesRead, 4 - headerBytesRead);
+            headerBytesRead += n;
         }
 
-        if (cv::waitKey(1) == 27) {
-            break;
-        }
-    }*/
+        int nextNumBytes = 0;
+        nextNumBytes |= bufferSmol[0];
+        nextNumBytes |= bufferSmol[1] << 8;
+        nextNumBytes |= bufferSmol[2] << 16;
+        nextNumBytes |= bufferSmol[3] << 24;
 
+        std::vector<unsigned char> buffer(nextNumBytes);
+        int totalRead = 0;
+        while (totalRead < nextNumBytes) {
+            totalRead += _conn->read(buffer.data() + totalRead, nextNumBytes - totalRead);
+        }
+
+        cv::Mat img = cv::imdecode(buffer, cv::IMREAD_COLOR);
+        if (img.empty()) {
+            std::cerr << "Failed to decode JPEG frame\n";
+        }
+
+        std::lock_guard<std::mutex> lock(_mutex);
+        _frame = img;
+        _firstFrameRecieved = true;
+    }
 }
