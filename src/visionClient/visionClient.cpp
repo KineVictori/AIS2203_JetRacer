@@ -77,19 +77,12 @@ void testLoc() {
 }
 
 visionClient::visionClient(std::string ip, int port)
-    : _clientCtx(){
-    testLoc();
-
-    std::cout << "Creating vision client..." << std::endl;
+    : _clientCtx() {
+    // testLoc();
 
     _conn = _clientCtx.connect(ip, port);
-    std::cout << "Connected!" << std::endl;
-
     _conn->write("AUTO");
-    std::cout << "Waiting for connection..." << std::endl;
-
     _thread = std::thread(&visionClient::runConnection, this);
-    std::cout << "Waiting for co." << std::endl;
 }
 
 visionClient::~visionClient() {
@@ -112,10 +105,12 @@ void visionClient::runConnection() {
     while (!_stopFlag) {
         std::vector<unsigned char> bufferSmol(4);
         int headerBytesRead = 0;
-        while (headerBytesRead < 4) {
+        while ((headerBytesRead < 4) && !_stopFlag) {
             int n = _conn->read(bufferSmol.data() + headerBytesRead, 4 - headerBytesRead);
             headerBytesRead += n;
         }
+
+        if (_stopFlag) {break;}
 
         int nextNumBytes = 0;
         nextNumBytes |= bufferSmol[0];
@@ -125,9 +120,11 @@ void visionClient::runConnection() {
 
         std::vector<unsigned char> buffer(nextNumBytes);
         int totalRead = 0;
-        while (totalRead < nextNumBytes) {
+        while ((totalRead < nextNumBytes) && !_stopFlag) {
             totalRead += _conn->read(buffer.data() + totalRead, nextNumBytes - totalRead);
         }
+
+        if (_stopFlag) {break;}
 
         cv::Mat img = cv::imdecode(buffer, cv::IMREAD_COLOR);
         if (img.empty()) {

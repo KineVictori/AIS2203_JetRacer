@@ -29,7 +29,7 @@ private:
     std::mutex _mutex;
 
     std::atomic<bool> _firstFrameRecieved = false;
-    std::atomic<bool> _stopFlag = true;
+    std::atomic<bool> _stopFlag = false;
     std::thread _thread;
     void runConnection();
 };
