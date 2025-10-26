@@ -6,9 +6,7 @@
 #include <mutex>
 #include <atomic>
 
-#include <iostream>
 #include <string>
-#include <optional>
 #include <opencv2/opencv.hpp>
 
 #include "simple_socket/TCPSocket.hpp"
@@ -19,13 +17,13 @@ public:
     visionClient(std::string ip, int port);
     ~visionClient();
 
-    std::optional<cv::Mat> getFrame();
+    std::vector<unsigned char> getFrame();
 
 private:
     simple_socket::TCPClientContext _clientCtx;
     std::unique_ptr<simple_socket::SimpleConnection> _conn;
 
-    cv::Mat _frame;
+    std::vector<unsigned char> _frame;
     std::mutex _mutex;
 
     std::atomic<bool> _firstFrameRecieved = false;
