@@ -90,16 +90,13 @@ visionClient::~visionClient() {
     _thread.join();
 }
 
+std::vector<unsigned char> visionClient::getFrame() {
+    if (!_firstFrameRecieved)
+        return {};
 
-std::optional<cv::Mat> visionClient::getFrame() {
-    if (_firstFrameRecieved) {
-        std::lock_guard<std::mutex> lock(_mutex);
-        return _frame.clone();
-    }
-
-    return {};
+    std::lock_guard<std::mutex> lock(_mutex);
+    return _frame;
 }
-
 
 void visionClient::runConnection() {
     while (!_stopFlag) {
@@ -126,13 +123,8 @@ void visionClient::runConnection() {
 
         if (_stopFlag) {break;}
 
-        cv::Mat img = cv::imdecode(buffer, cv::IMREAD_COLOR);
-        if (img.empty()) {
-            std::cerr << "Failed to decode JPEG frame\n";
-        }
-
         std::lock_guard<std::mutex> lock(_mutex);
-        _frame = img;
+        _frame = std::move(buffer);
         _firstFrameRecieved = true;
     }
 }
