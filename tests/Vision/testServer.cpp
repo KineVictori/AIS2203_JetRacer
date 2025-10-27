@@ -1,6 +1,6 @@
 
 #include <opencv2/opencv.hpp>
-#include "vision/Vision.hpp"
+#include "Vision/Vision.hpp"
 
 int main() {
 
