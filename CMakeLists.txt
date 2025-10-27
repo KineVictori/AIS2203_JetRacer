@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.31.5)
 project(AIS2203_JetRacer)
 
 set(CMAKE_CXX_STANDARD 20)
