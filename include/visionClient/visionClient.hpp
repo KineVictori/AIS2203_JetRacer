@@ -7,7 +7,7 @@
 #include <atomic>
 
 #include <string>
-#include <opencv2/opencv.hpp>
+#include <vector>
 
 #include "simple_socket/TCPSocket.hpp"
 #include "simple_socket/SimpleConnection.hpp"

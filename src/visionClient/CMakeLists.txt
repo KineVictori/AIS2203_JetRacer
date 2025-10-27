@@ -13,7 +13,7 @@ set(SHARED_SOURCES
 )
 
 add_library(visionClient ${SHARED_SOURCES})
-target_link_libraries(visionClient PUBLIC ${OpenCV_LIBRARIES} simple_socket)
+target_link_libraries(visionClient PUBLIC simple_socket)
 target_include_directories(visionClient PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
 set(PYBIND11_FINDPYTHON ON)
