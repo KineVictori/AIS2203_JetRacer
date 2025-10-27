@@ -3,8 +3,8 @@ include(FetchContent)
 set(SIMPLE_SOCKET_BUILD_TESTS OFF)
 FetchContent_Declare(
         SimpleSocket
-        GIT_REPOSITORY https://github.com/markaren/SimpleSocket.git
-        GIT_TAG 96d28d34fed63a9888f52dad282227f40f0f1122
+        GIT_REPOSITORY https://github.com/IslandRock1/SimpleSocket.git
+        GIT_TAG "master"
 )
 FetchContent_MakeAvailable(SimpleSocket)
 
@@ -23,3 +23,10 @@ add_library(Steering ${SHARED_SOURCES})
 target_link_libraries(Steering PUBLIC simple_socket nlohmann_json) # I want this to be private, but it does not work..?
 
 target_include_directories(Steering PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+set(PYBIND11_FINDPYTHON ON)
+find_package(pybind11)
+if(pybind11_FOUND)
+    pybind11_add_module(SteeringPython pybind.cpp)
+    target_link_libraries(SteeringPython PRIVATE Steering)
+endif()
