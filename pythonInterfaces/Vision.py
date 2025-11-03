@@ -32,7 +32,7 @@ class VisionClient:
         Returns:
             np.ndarray | None: The decoded frame as a NumPy array, or None if no frame is available.
         """
-        data = self._native.getFrameBytes()
+        data = self._native.getFrame()
         if not data:
             return None
 
