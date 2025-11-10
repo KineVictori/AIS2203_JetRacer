@@ -75,6 +75,9 @@ class Steering:
         """
         self._impl = _Steering(ip, port)
 
+    def isReady(self):
+        return self._impl.isReady()
+
     def sendData(self, data: SteeringData) -> None:
         """Send steering and throttle data."""
         self._impl.sendData(data._unwrap())
