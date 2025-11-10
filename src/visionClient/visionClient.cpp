@@ -9,11 +9,11 @@ visionClient::visionClient(std::string ip, int port)
         _conn = _clientCtx.connect(ip, port);
         _conn->write("AUTO");
         _thread = std::thread(&visionClient::runConnection, this);
+
+        _isReady = true;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-
-    _isReady = true;
 }
 
 visionClient::~visionClient() {

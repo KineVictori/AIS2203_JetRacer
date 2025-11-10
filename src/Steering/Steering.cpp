@@ -6,11 +6,11 @@
 Steering::Steering(const std::string& ip, const int port) {
     try {
         _conn = _clientCtx.connect(ip, port);
+
+        _isReady = true;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-
-    _isReady = true;
 }
 
 bool Steering::isReady() const {
