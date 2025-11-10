@@ -13,12 +13,19 @@ visionClient::visionClient(std::string ip, int port)
 
     _conn->write("AUTO");
     _thread = std::thread(&visionClient::runConnection, this);
+
+    _isReady = true;
 }
 
 visionClient::~visionClient() {
     _stopFlag = true;
     _thread.join();
 }
+
+bool visionClient::isReady() const {
+    return _isReady;
+}
+
 
 std::vector<unsigned char> visionClient::getFrame() {
     if (!_firstFrameRecieved)

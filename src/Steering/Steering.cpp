@@ -9,7 +9,14 @@ Steering::Steering(const std::string& ip, const int port) {
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
+
+    _isReady = true;
 }
+
+bool Steering::isReady() const {
+    return _isReady;
+}
+
 
 void Steering::sendData(const SteeringData& data) const {
     auto jsonData = toJson(data);

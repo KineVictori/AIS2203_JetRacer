@@ -17,11 +17,13 @@ public:
     visionClient(std::string ip, int port);
     ~visionClient();
 
+    bool isReady() const;
     std::vector<unsigned char> getFrame();
 
 private:
     simple_socket::TCPClientContext _clientCtx;
     std::unique_ptr<simple_socket::SimpleConnection> _conn;
+    bool _isReady = false;
 
     std::vector<unsigned char> _frame;
     std::mutex _mutex;
