@@ -25,6 +25,9 @@ class VisionClient:
         """
         self._native = VisionPython.visionClient(ip, port)
 
+    def isReady(self):
+        return self._native.isReady()
+
     def getFrame(self) -> Optional[np.ndarray]:
         """
         Get the latest frame from the vision client as an OpenCV image (BGR).
