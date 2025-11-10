@@ -1,10 +1,16 @@
 
+#include <iostream>
 #include "visionClient/visionClient.hpp"
 
 visionClient::visionClient(std::string ip, int port)
     : _clientCtx() {
 
-    _conn = _clientCtx.connect(ip, port);
+    try {
+        _conn = _clientCtx.connect(ip, port);
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
     _conn->write("AUTO");
     _thread = std::thread(&visionClient::runConnection, this);
 }
