@@ -1,19 +1,18 @@
 import tkinter as tk
 import cv2
-import testPythonLib as tp
-from Steering import Steering, SteeringData
+from Steering import SteeringData
 from PIL import Image, ImageTk
 from Buttons import Button
-from Vision import VisionClient
+from MiddleMan import MiddleMan
+
+middleMan = MiddleMan()
 
 
-print(1)
-steering = Steering("10.22.23.202", 43457)
 data = SteeringData()
-visionClient = VisionClient("10.22.23.202", 45678)
-print(2)
+
 
 data.throttle = 0
+
 
 #class DummyData:
 #    def __init__(self):
@@ -28,19 +27,15 @@ data.throttle = 0
 #def dummy_send_data(data):
 #    print(f"[DUMMY] Sending data - Throttle: {data.throttle}, Steering: {data.steering}, Gain: {data.throttle_gain}")
 
-buttons = Button(data, steering)
-
-#prints out what key of the WASD was pressed or released for debugging 
-
+buttons = Button(data, middleMan)
 
 
 #path = 0
 #vid = cv2.VideoCapture(path) #Use 0 for webcam or change to your video file path
 
 def updateFrame():
-    maybeFrame = visionClient.getFrame()
-    if maybeFrame is not None:  
-        print("Got frame")
+    maybeFrame = middleMan.GetDataFromCar()
+    if maybeFrame is not None:
 
         #Convert frame to RGB and resize if needed
         cv2image = cv2.cvtColor(maybeFrame, cv2.COLOR_BGR2RGB)
@@ -60,7 +55,6 @@ def updateFrame():
         videoLabel.imgtk = imgtk
         videoLabel.configure(image=imgtk)
     else:
-        print("Got not frame")
         videoLabel.configure(bg='dark grey', width=1, height=1) #80 30
     
     #Schedule the next frame update
@@ -73,7 +67,7 @@ def steeringOffset(value):
     print(value)
     data.steering_offset = float(value)
     print("adjusting wheel")
-    steering.sendData(data)
+    middleMan.SendDataToCar(data)
 
 def throttleGain(value):
     data.throttle_gain = float(value)
@@ -161,5 +155,5 @@ videoFrame.place(x=300, y=100)
 print(12)
 # Start the video update loop
 window.after(24, updateFrame)
-buttons.steering.sendData(data)
+middleMan.SendDataToCar(data)
 window.mainloop()
