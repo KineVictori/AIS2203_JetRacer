@@ -27,6 +27,7 @@ PYBIND11_MODULE(SteeringPython, m) {
     // --- Steering class ---
     py::class_<Steering>(m, "Steering")
         .def(py::init<const std::string&, int>(), py::arg("ip"), py::arg("port"))
+        .def("isReady", &Steering::isReady, "Check if connected to car.")
         .def("sendData", &Steering::sendData, py::arg("data"),
              "Send SteeringData to the remote host");
 }

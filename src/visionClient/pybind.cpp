@@ -9,6 +9,7 @@ PYBIND11_MODULE(VisionPython, m) {
 
 	py::class_<visionClient>(m, "visionClient")
 		.def(py::init<std::string, int>(), py::arg("ip"), py::arg("port"))
+		.def("isReady", &visionClient::isReady, "Check if connected to car.")
 		.def("getFrame", &visionClient::getFrame,
 			 "Get the latest frame as raw bytes.");
 }
