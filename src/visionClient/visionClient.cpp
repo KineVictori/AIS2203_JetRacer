@@ -17,7 +17,10 @@ visionClient::visionClient(std::string ip, int port)
 
 visionClient::~visionClient() {
     _stopFlag = true;
-    _thread.join();
+
+    if (_conn != nullptr) {
+        _thread.join();
+    }
 }
 
 bool visionClient::isReady() const {
