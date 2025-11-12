@@ -5,14 +5,15 @@ from PIL import Image, ImageTk
 from Buttons import Button
 from MiddleMan import MiddleMan
 
+print(1)
 middleMan = MiddleMan()
-
+print(2)
 
 data = SteeringData()
-
+print(3)
 
 data.throttle = 0
-
+print(4)
 
 #class DummyData:
 #    def __init__(self):
@@ -28,13 +29,16 @@ data.throttle = 0
 #    print(f"[DUMMY] Sending data - Throttle: {data.throttle}, Steering: {data.steering}, Gain: {data.throttle_gain}")
 
 buttons = Button(data, middleMan)
-
+print(5)
 
 #path = 0
 #vid = cv2.VideoCapture(path) #Use 0 for webcam or change to your video file path
 
+cap = cv2.VideoCapture(0)
+
 def updateFrame():
     maybeFrame = middleMan.GetDataFromCar()
+        
     if maybeFrame is not None:
 
         #Convert frame to RGB and resize if needed
@@ -54,12 +58,30 @@ def updateFrame():
         #Update the label with new image
         videoLabel.imgtk = imgtk
         videoLabel.configure(image=imgtk)
+        
     else:
-        videoLabel.configure(bg='dark grey', width=1, height=1) #80 30
+        returN, frame = cap.read()
+        if returN:
+            cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            
+            scalePercentX = 88
+            scalePercentY = 67
+            width = int(cv2image.shape[1] * scalePercentX / 100)
+            height = int(cv2image.shape[0] * scalePercentY / 100)
+            cv2image = cv2.resize(cv2image, (width, height))
+            
+            pilImage = Image.fromarray(cv2image)
+            imgtk = ImageTk.PhotoImage(image=pilImage)
+            
+            videoLabel.imgtk = imgtk
+            videoLabel.configure(image=imgtk)
+        else:
+            videoLabel.configure(bg='dark grey', width=80, height=21) #80 30
+        
     
     #Schedule the next frame update
     window.after(24, updateFrame)
-
+    
 
 
 
@@ -72,7 +94,7 @@ def steeringOffset(value):
 def throttleGain(value):
     data.throttle_gain = float(value)
     print("adjusting throttle gain")
-    #steering.sendData(data)   
+    middleMan.SendDataToCar(data)   
 
 def writeUpPressed(event):
     speed.set(float(data.throttle_gain + 0.2))

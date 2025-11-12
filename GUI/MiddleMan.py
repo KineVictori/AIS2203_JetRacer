@@ -5,7 +5,7 @@ from Steering import Steering, SteeringData
 class MiddleMan:
     def __init__(self):
         self.steering = Steering("10.22.23.202", 43457)
-        self.visionClient = VisionClient("10.22.23.202", 45678)
+        self.visionClient = VisionClient("10.22.23.202", 45678) 
 
     
     def SendDataToCar(self, data):
@@ -17,6 +17,7 @@ class MiddleMan:
     def GetDataFromCar(self):
         if self.visionClient.isReady():
             return self.visionClient.getFrame()
-        else:                                       #gui skal bruke denne til å hente data. 
-            None
+        else:
+            return None                 #gui skal bruke denne til å hente data. 
+            
 
