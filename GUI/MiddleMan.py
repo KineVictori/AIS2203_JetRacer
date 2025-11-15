@@ -4,8 +4,9 @@ from Steering import Steering, SteeringData
 
 class MiddleMan:
     def __init__(self):
-        self.steering = Steering("10.22.23.202", 43457)
-        self.visionClient = VisionClient("10.22.23.202", 45678) 
+        ip = "10.24.15.153"
+        self.steering = Steering(ip, 43457)
+        self.visionClient = VisionClient(ip, 45678)
 
     
     def SendDataToCar(self, data):
